@@ -13,6 +13,10 @@ function echo($data){
     Write-host $data
 }
 
+function var_dump($object){
+    $object | Select-Object -Property *
+}
+
 function new([string] $className){
     return New-Object $className
 }
@@ -796,6 +800,51 @@ class UIRadioButton : UISelected {
         $this.constructObject('RadioButton');
     }
 } 
+# [Builder] Import UISelectBox ; 
+<##
+ # После с выпадающими вариантами
+ #>
+ 
+class UISelectBox: UILabeled {
+    UISelectBox() {
+        $this.constructObject('ComboBox');
+        # $this.setRelatives($true, $true);
+    }    
+
+    addItems([array] $items){
+        foreach ($item in $items) {
+            $this.addItem($item.toString());
+        }
+    }
+
+    addItem([string] $item){
+        $this.object.items.add($item);
+    }
+
+    [object] getItems(){
+        return $this.object.items;
+    }
+
+    [string] getSelectedItem(){
+        return $this.object.selectedText;
+    }
+
+    setSelectedIndex([int] $index){
+        $this.object.selectedIndex = $index;
+    }
+
+    [int] getSelectedIndex(){
+        return $this.object.selectedIndex;
+    }
+
+    setBoxHeight([int] $height){
+        $this.object.DropDownHeight = $height;
+    }
+
+    setDroppedDown([bool] $value){
+        $this.object.droppedDown = $value;
+    }
+} 
 # [Builder] Import UITextBox ; 
 <##
  # Однострочное поле для ввода текста
@@ -805,6 +854,34 @@ class UITextBox: UILabeled {
     UITextBox() {
         $this.constructObject('TextBox');
     }    
+
+    setWordWrap([bool] $value){
+        $this.object.WordWrap = $value;
+    }
+    
+    setMultiline([bool] $value){
+        $this.object.MultiLine = $value;
+    }
+
+    [bool] getMultiline(){
+        return $this.object.MultiLine;
+    }
+
+    <##
+     #
+     #  Both (default)      Displays horizontal or vertical scroll bars, or both, only when text exceeds the width or length of the control.
+     #  None                Never displays any type of scroll bar.
+     #  Horizontal          Displays a horizontal scroll bar only when the text exceeds the width of the control. (For this to occur, the WordWrap property must be set to false.)
+     #  Vertical            Displays a vertical scroll bar only when the text exceeds the height of the control.
+     #  ForcedHorizontal    Displays a horizontal scroll bar when the WordWrap property is set to false. The scroll bar appears dimmed when text does not exceed the width of the control.
+     #  ForcedVertical      Always displays a vertical scroll bar. The scroll bar appears dimmed when text does not exceed the length of the control.
+     #  ForcedBoth          Always displays a vertical scrollbar. Displays a horizontal scroll bar when the WordWrap property is set to false. The scroll bars appear grayed when text does not exceed the width or length of the control.
+     #>
+    setScrollBars([string] $scroll){
+        $this.object.ScrollBars = $scroll;
+    }
+
+
 } 
 # [Builder] Import UIPanel ; 
 <#
@@ -830,7 +907,6 @@ Write-host "before start ... /// "
 $form = new UIForm;
 $form.setTitle('meow');
 $form.setSize(700, 500);
-# $form.setIcon("E:\Downloads\anki-2.1.9-windows.exe");
 
 $font = [UIFont]::new('Arial', 10);
 $font.setBold($true);
@@ -866,7 +942,7 @@ $checkBox.setPos(10, 25);
 $form.add($checkBox);
 
 $panel = new UIPanel
-$panel.setPos(100, 50);
+$panel.setPos(150, 50);
 $panel.setAutoSize($false);
 $panel.setSize(500, 300);
 $panel.setText('Hello World!');
@@ -875,6 +951,13 @@ $label.useParentDragBounds($true);
 $label.setParentDragPadding(15, 10, 10, 10);
 $form.add($panel);
 
+$select = new UISelectBox;
+$select.setPos(5, 50);
+$select.addItems(@('a', 'b','c','MeOw'));
+$select.setSelectedIndex(0);
+$select.setBoxHeight(150);
 
+$form.add($select);
 
+var_dump($select.object);
 $form.show();

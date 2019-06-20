@@ -9,7 +9,6 @@ Write-host "before start ... /// "
 $form = new UIForm;
 $form.setTitle('meow');
 $form.setSize(700, 500);
-# $form.setIcon("E:\Downloads\anki-2.1.9-windows.exe");
 
 $font = [UIFont]::new('Arial', 10);
 $font.setBold($true);
@@ -45,7 +44,7 @@ $checkBox.setPos(10, 25);
 $form.add($checkBox);
 
 $panel = new UIPanel
-$panel.setPos(100, 50);
+$panel.setPos(150, 50);
 $panel.setAutoSize($false);
 $panel.setSize(500, 300);
 $panel.setText('Hello World!');
@@ -54,6 +53,13 @@ $label.useParentDragBounds($true);
 $label.setParentDragPadding(15, 10, 10, 10);
 $form.add($panel);
 
+$select = new UISelectBox;
+$select.setPos(5, 50);
+$select.addItems(@('a', 'b','c','MeOw'));
+$select.setSelectedIndex(0);
+$select.setBoxHeight(150);
 
+$form.add($select);
 
+var_dump($select.object);
 $form.show();

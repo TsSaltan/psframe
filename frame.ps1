@@ -10,6 +10,10 @@ function echo($data){
     Write-host $data
 }
 
+function var_dump($object){
+    $object | Select-Object -Property *
+}
+
 function new([string] $className){
     return New-Object $className
 }
