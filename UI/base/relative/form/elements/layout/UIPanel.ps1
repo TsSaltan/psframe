@@ -2,7 +2,8 @@
  # Текст
  #>
 class UIPanel : UILabeled {
-    UILabel() {
-        $this.constructObject('Label');
+    UIPanel() {
+        $this.constructObject('GroupBox');
+        $this.setRelatives($true, $true);
     }    
 }

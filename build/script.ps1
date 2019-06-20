@@ -80,15 +80,17 @@ function getCursorPos(){
  #>
 
 <# abstract #> class UIBase {
+    # hidden [object] $objectType;
     hidden [object] $object;
     static [int] $itemCounter = 0;
     [string] $id;
 
-    constructObject([string] $objectName){
+    constructObject([string] $objectType){
         Add-Type -AssemblyName System.Windows.Forms;
-        $this.object = New-Object System.Windows.Forms.$objectName;
-        $number = ++[UIBase]::itemCounter
-        $this.setId("$objectName{0}" -f $number)
+        # $this.objectType = $objectType;
+        $this.object = New-Object System.Windows.Forms.$objectType;
+        $number = ++[UIBase]::itemCounter;
+        $this.setId("$objectType{0}" -f $number);
     }
 
     UIBase() {
@@ -125,13 +127,28 @@ function getCursorPos(){
         $this.object.width = $width;
     }
 
+    [int] getWidth(){
+        return $this.object.width;
+    }
+
     setHeight([int] $height){
         $this.object.height = $height;
+    }
+
+    [int] getHeight(){
+        return $this.object.height;
     }
 
     setSize([int] $width, [int] $height){
         $this.setWidth($width);
         $this.setHeight($height);
+    }
+
+    <#
+     # @return object [width, height]
+     #>
+    [object] getSize(){
+        return @{width = $this.getWidth(); height = $this.getHeight()};
     }
 
     setAutoSize([bool] $size){
@@ -142,6 +159,9 @@ function getCursorPos(){
         $this.object.location = New-Object System.Drawing.Point($x, $y);
     }
 
+    <#
+     # @return object [X, Y]
+     #>
     [object] getPos(){
         return $this.object.location;
     }
@@ -550,50 +570,112 @@ class UIForm : UIRelative {
         }
     }
 
-    <#
-     # Drug features
+    <##
+     # Активировано ли перетаскивание объекта
      #>
-    hidden [bool] $drag;
-    hidden [bool] $dragEvents = $false;
-    hidden [bool] $dragging = $false;
-    hidden [int] $mouseDragX = -1;
-    hidden [int] $mouseDragY = -1;
+    hidden [bool] $drag = $false;
 
+    <##
+     # Добавлены ли события для управления перетаскиванием
+     #>
+    hidden [bool] $dragEvents = $false;
+
+    <##
+     # Включено ли ограничение для перетаскивания (не дальше родительского элемента)
+     #>
+    hidden [bool] $dragLimit = $false;
+
+    <##
+     # Отступы внутри родителя, если есть ограничение
+     #>
+    hidden [object] $dragPadding = @{
+        top = 0; left = 0; right = 0; bottom = 0
+    };
+
+    <##
+     # Начато ли перетаскивание
+     #>
+    hidden [bool] $dragging = $false;
+
+    <##
+     # Последняя координата мыши при перетаскивании
+     #>
+    hidden [object] $dragMouse;
+
+
+    <##
+     # Включить/выключить возможность перетаскивать объект
+     #>
     setDraggable([bool] $drag){
         $this.drag = $drag;
-        # Таким образом можно передать переменные внутрь callback-функции
-        $script:that = $this;
+        $script:that = $this; # Таким образом можно передать переменные внутрь callback-функции
+
         if($drag -and $this.dragEvents -eq $false){
             $this.dragEvents = $true;
             $this.on('MouseDown', {
-                $pos = getCursorPos
                 if($that.drag){
-                    # Write-host "[DOWN !]";
+                    $pos = getCursorPos
                     $that.dragging = $true;
-                    $that.mouseDragX = $pos.X
-                    $that.mouseDragY = $pos.Y
+                    $that.dragMouse = $pos;
                 }
             });
 
             $this.on('MouseMove', {
                 if($that.drag -and $that.dragging){
                     $pos = getCursorPos
-                    $currentPos = $that.getPos()
-                    $that.setPos($currentPos.X + $pos.X - $that.mouseDragX, $currentPos.Y + $pos.Y - $that.mouseDragY)
+                    $currentPos = $that.getPos();
                     
-                    $that.mouseDragX = $pos.X
-                    $that.mouseDragY = $pos.Y
+                    if($that.dragLimit -eq $null){
+                        $currentX = $currentPos.X + $pos.X - $that.dragMouse.x;
+                        $currentY = $currentPos.Y + $pos.Y - $that.dragMouse.y;
+                    } else {
+                        $parentSizes = $that.getParent().getSize();
+                        $currentSizes = $that.getSize();
+
+                        $currentX = [math]::min([math]::max($that.dragPadding.left, $currentPos.x + $pos.x - $that.dragMouse.x), $parentSizes.width - $currentSizes.width - $that.dragPadding.right);
+                        $currentY = [math]::min([math]::max($that.dragPadding.top, $currentPos.y + $pos.y - $that.dragMouse.y), $parentSizes.height - $currentSizes.height - $that.dragPadding.bottom);
+                    }
+
+                    $that.setPos($currentX, $currentY);
+                    $that.dragMouse = $pos;
                 }
             });
 
 
             $this.on('MouseUp', { 
                 if($that.dragging){
-                    # Write-host "[UP !]";
                     $that.dragging = $false 
                 }
             })
         }
+    }
+
+    <##
+     # Ограничить перетаскивания родителем (не резрешить перетаскивать за пределы родителя)
+     #>
+    useParentDragBounds([bool] $limit){
+        $this.dragLimit = $limit;
+    }
+
+    <##
+     # Установить размеры отступов от границ родителя (если перетаскивание ограничено границами родителя)
+     #>
+    setParentDragPadding([int] $padding){
+        $this.dragPadding = @{
+            top = $padding; left = $padding; right = $padding; bottom = $padding
+        };
+    }
+
+    setParentDragPadding([int] $paddingW, [int] $paddingH){
+        $this.dragPadding = @{
+            top = $paddingH; left = $paddingW; right = $paddingW; bottom = $paddingH
+        };
+    }
+
+    setParentDragPadding([int] $paddingTop, [int] $paddingRight, [int] $paddingBottom, [int] $paddingLeft){
+        $this.dragPadding = @{
+            top = $paddingTop; left = $paddingLeft; right = $paddingRight; bottom = $paddingBottom
+        };
     }
 } 
 # [Builder] Import UILabeled ; 
@@ -729,8 +811,9 @@ class UITextBox: UILabeled {
  # Текст
  #>
 class UIPanel : UILabeled {
-    UILabel() {
-        $this.constructObject('Label');
+    UIPanel() {
+        $this.constructObject('GroupBox');
+        $this.setRelatives($true, $true);
     }    
 } 
  
@@ -763,7 +846,7 @@ $label.setAnchor('Top, Left');
 # $label.setAnchors($true, $true, $false, $false);
 $label.setAutoSize($false);
 $label.setFont($font);
-$form.add($label);
+#$form.add($label);
 
 $checkBox = new UICheckbox;
 $checkBox.setText('Dragging');
@@ -778,7 +861,20 @@ $checkBox.on('click', {
         $label.set('backColor', '#ff2222');
     }
 });
+
 $checkBox.setPos(10, 25);
 $form.add($checkBox);
+
+$panel = new UIPanel
+$panel.setPos(100, 50);
+$panel.setAutoSize($false);
+$panel.setSize(500, 300);
+$panel.setText('Hello World!');
+$panel.add($label);
+$label.useParentDragBounds($true);
+$label.setParentDragPadding(15, 10, 10, 10);
+$form.add($panel);
+
+
 
 $form.show();

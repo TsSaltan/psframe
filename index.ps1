@@ -25,7 +25,7 @@ $label.setAnchor('Top, Left');
 # $label.setAnchors($true, $true, $false, $false);
 $label.setAutoSize($false);
 $label.setFont($font);
-$form.add($label);
+#$form.add($label);
 
 $checkBox = new UICheckbox;
 $checkBox.setText('Dragging');
@@ -40,7 +40,20 @@ $checkBox.on('click', {
         $label.set('backColor', '#ff2222');
     }
 });
+
 $checkBox.setPos(10, 25);
 $form.add($checkBox);
+
+$panel = new UIPanel
+$panel.setPos(100, 50);
+$panel.setAutoSize($false);
+$panel.setSize(500, 300);
+$panel.setText('Hello World!');
+$panel.add($label);
+$label.useParentDragBounds($true);
+$label.setParentDragPadding(15, 10, 10, 10);
+$form.add($panel);
+
+
 
 $form.show();

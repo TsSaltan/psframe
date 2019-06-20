@@ -3,15 +3,17 @@
  #>
 
 <# abstract #> class UIBase {
+    # hidden [object] $objectType;
     hidden [object] $object;
     static [int] $itemCounter = 0;
     [string] $id;
 
-    constructObject([string] $objectName){
+    constructObject([string] $objectType){
         Add-Type -AssemblyName System.Windows.Forms;
-        $this.object = New-Object System.Windows.Forms.$objectName;
-        $number = ++[UIBase]::itemCounter
-        $this.setId("$objectName{0}" -f $number)
+        # $this.objectType = $objectType;
+        $this.object = New-Object System.Windows.Forms.$objectType;
+        $number = ++[UIBase]::itemCounter;
+        $this.setId("$objectType{0}" -f $number);
     }
 
     UIBase() {
@@ -48,13 +50,28 @@
         $this.object.width = $width;
     }
 
+    [int] getWidth(){
+        return $this.object.width;
+    }
+
     setHeight([int] $height){
         $this.object.height = $height;
+    }
+
+    [int] getHeight(){
+        return $this.object.height;
     }
 
     setSize([int] $width, [int] $height){
         $this.setWidth($width);
         $this.setHeight($height);
+    }
+
+    <#
+     # @return object [width, height]
+     #>
+    [object] getSize(){
+        return @{width = $this.getWidth(); height = $this.getHeight()};
     }
 
     setAutoSize([bool] $size){
@@ -65,6 +82,9 @@
         $this.object.location = New-Object System.Drawing.Point($x, $y);
     }
 
+    <#
+     # @return object [X, Y]
+     #>
     [object] getPos(){
         return $this.object.location;
     }
