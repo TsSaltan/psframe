@@ -1,6 +1,7 @@
 <##
  # Графическая форма
  #>
+ 
 class UIForm : UIRelative {
 
     UIForm() {

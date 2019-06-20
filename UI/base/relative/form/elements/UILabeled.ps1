@@ -1,12 +1,13 @@
 <#
  # Все объекты, сдержащие текст, должны наследоваться от этого объекта
  #>
-class UILabeled : UIFormElement {
+ 
+<# abstract #> class UILabeled : UIElement {
 
-    <# abstract #> UILabeled() {
+    UILabeled() {
         $type = $this.getType();
         if ($type -eq [UILabeled]){
-            throw ("[$type] Abstract class must be inherited");
+            throw "[AbstractError] Abstract class '$type' must be inherited";
         }
     }  
 

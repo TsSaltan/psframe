@@ -7,7 +7,7 @@
     UIRelative() {
         $type = $this.getType();
         if ($type -eq [UIRelative]){
-            throw ("[AbstractError] Abstract class '$type' must be inherited");
+            throw "[AbstractError] Abstract class '$type' must be inherited";
         }
     }
 

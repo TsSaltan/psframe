@@ -10,7 +10,6 @@ function echo($data){
     Write-host $data
 }
 
-
 function new([string] $className){
     return New-Object $className
 }
@@ -27,5 +26,3 @@ function getCursorPos(){
 
     return [UICursor]::getPos()
 }
-
-function getPSFrameVersion

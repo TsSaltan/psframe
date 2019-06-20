@@ -17,7 +17,7 @@
     UIBase() {
         $type = $this.getType();
         if ($type -eq [UIBase]){
-            throw ("[$type] Abstract class must be inherited");
+            throw "[AbstractError] Abstract class '$type' must be inherited";
         }
     }
 

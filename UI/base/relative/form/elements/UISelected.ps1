@@ -1,12 +1,13 @@
 <#
- # Все объекты, сдержащие текст, должны наследоваться от этого объекта
+ # Все объекты, сдержащие возможность выбора, должны наследоваться от этого объекта
  #>
-class UISelected : UILabeled {
 
-    <# abstract #> UISelected() {
+<# abstract #> class UISelected : UILabeled {
+
+    UISelected() {
         $type = $this.getType();
         if ($type -eq [UISelected]){
-            throw ("[$type] Abstract class must be inherited");
+            throw "[AbstractError] Abstract class '$type' must be inherited";
         }
     }  
 

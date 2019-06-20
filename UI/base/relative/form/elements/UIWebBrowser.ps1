@@ -1,4 +1,8 @@
-class UIWebBrowser : UIFormElement {
+<#
+ # Web-браузер (IE)
+ #>
+
+class UIWebBrowser : UIElement {
     UIWebBrowser() {
         $this.constructObject('WebBrowser');
     }    

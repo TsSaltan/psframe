@@ -3,12 +3,12 @@
  # Управление расположением объектов на форме, растягивание и т.д.
  ##>
 
-<# abstract #> class UIFormElement : UIRelative {
+<# abstract #> class UIElement : UIRelative {
 
-    UIFormElement() {
+    UIElement() {
         $type = $this.getType();
-        if ($type -eq [UIFormElement]){
-            throw "[$type] Abstract class must be inherited";
+        if ($type -eq [UIElement]){
+            throw "[AbstractError] Abstract class '$type' must be inherited";
         }
     }
 
