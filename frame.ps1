@@ -3,19 +3,28 @@
  # by tssaltan
  #
  # Required PS version: 3.0
- # Framework version: 0.1-dev
+ # Framework version: 0.2-dev
+ #
+ # Create file index.ps1 and put here your script
  #>
 
 function echo($data){
     Write-host $data
 }
 
-function var_dump($object){
+function dump($object){
     $object | Select-Object -Property *
 }
 
+# @deprecated
 function new([string] $className){
     return New-Object $className
+}
+
+function timestamp(){
+    $time = Get-Date -uFormat %s
+    $sec,$ms = $time.split(',')
+    return $sec;
 }
 
 function getCursorPos(){
@@ -29,4 +38,8 @@ function getCursorPos(){
 '@  -ReferencedAssemblies 'System.Windows.Forms.dll','System.Drawing.dll'    
 
     return [UICursor]::getPos()
+}
+
+function hash($string, $method){
+    return $string | Get-Hash -Algorithm $method
 }
