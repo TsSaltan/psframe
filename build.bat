@@ -3,10 +3,11 @@ setlocal ENABLEDELAYEDEXPANSION
 chcp 65001 > nul
 
 :: Mask for powershell files
-set mask=%cd%\*.ps1
+set srcDir=%cd%\src
+set mask=%srcDir%\*.ps1
 
 :: Create build folder if not exists
-set outputDir=%cd%\.build
+set outputDir=%cd%\build
 mkdir "%outputDir%" 2> nul
 
 set outputFile=%outputDir%\app.tmp
@@ -25,25 +26,25 @@ echo. >> %outputFile%
 for /f %%f in ('dir "%mask%" /b/s') do (
 	if not "%%~nf" == "index" if not "%%~nf" == "test" (
 		echo [Builder] Import file: %%f
-		echo # [Builder] Import %%~nf ; >> %outputFile%
+		echo # [Builder] Import %%~nf >> %outputFile%
 		type %%f >> %outputFile%
 		echo. >> %outputFile%
 	)
 )
 
-if exist "%cd%\index.ps1" (
+if exist "%srcDir%\index.ps1" (
 	echo [Builder] Import index.ps1 file
 	echo. >> %outputFile%
 	echo # [Builder] Import index.ps1 file ; >> %outputFile%
 	echo. >> %outputFile%
-	type "%cd%\index.ps1" >> %outputFile%
+	type "%srcDir%\index.ps1" >> %outputFile%
 ) else (
-	if exist "%cd%\test.ps1" (
+	if exist "%srcDir%\test.ps1" (
 		echo [Builder] Import test.ps1 file
 		echo. >> %outputFile%
 		echo # [Builder] Import test.ps1 file ; >> %outputFile%
 		echo. >> %outputFile%
-		type "%cd%\test.ps1" >> %outputFile%
+		type "%srcDir%\test.ps1" >> %outputFile%
 	)
 )
 

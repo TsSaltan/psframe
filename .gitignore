@@ -1,2 +1,2 @@
-.build/*
-index.ps1
+build/*
+src/index.ps1
