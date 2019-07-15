@@ -106,6 +106,11 @@
         $this.object.backColor = $color;
     }
 
+    setTransparentKey([string] $color){
+        $this.object.AllowTransparency = $true;
+        $this.object.TransparencyKey = $color;
+    }
+
     <##
      # - AppStarting
      # - Arrow

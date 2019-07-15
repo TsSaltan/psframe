@@ -1,5 +1,5 @@
 class Log {
-    static [bool] $logFile = 'app.log'
+    static [string] $logFile = 'app.log'
     static [bool] $writeFile = $true;
     static [bool] $writeHost = $true;
     static [int] $writeLevel = 0;
@@ -43,9 +43,9 @@ class Log {
             }
 
             if([Log]::writeFile){
-                $date = Get-Date -uFormat "%Y-%m-%d %H:%M:%S"
-                $fmessage = "[$date] [$type] $message"
-                [File]::write([Log]::logFile, $fmessage, $false)
+                $date = Get-Date -uFormat "%Y-%m-%d %H:%M:%S";
+                $fmessage = "[$date] [$type] $message";
+                [File]::add([Log]::logFile, $fmessage);
             }
         }
     }

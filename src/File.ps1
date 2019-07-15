@@ -8,14 +8,18 @@ class File {
     }
 
     static write([string] $path, $data){
-        [File]::write($path, $data, $true)
+        $data | Set-Content -Path $Path;
     }
 
-    static write([string] $path, $data, [bool] $overwrite){
-        if($overwrite){
-            $data | Set-Content -Path $Path
-        } else {
-            $data | Add-Content -Path $Path
-        }
+    static add([string] $path, $data){
+        $data | Add-Content -Path $Path;
     }
+<#
+    static readJson([string] $path){
+        return [File]::read($path) | ConvertFrom-Json;
+    }
+
+    static writeJson([string] $path, $data){
+        [File]::add($path, ($data | ConvertTo-Json));
+    }#>
 }

@@ -73,5 +73,3 @@ if "%launch%"=="y" (
 	echo Application starting...
 	powershell.exe -ExecutionPolicy UnRestricted -File "%outputDir%\%outputBasename%"
 )
-
-pause

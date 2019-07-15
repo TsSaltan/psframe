@@ -1,2 +1,2 @@
 @echo off
-start build.bat -launch
+build -launch
