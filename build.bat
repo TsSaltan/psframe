@@ -55,7 +55,8 @@ if not exist "%launcherFile%" (
 	echo set Shell = CreateObject("WScript.Shell"^) >> "%launcherFile%"
 	echo set FSO = CreateObject("Scripting.FileSystemObject"^) >> "%launcherFile%"
 	echo Path = "powershell.exe -ExecutionPolicy UnRestricted -WindowStyle hidden -File " ^& FSO.GetParentFolderName(FSO.GetFile(WScript.ScriptFullName^)^) ^& "\\%outputBasename%" >> "%launcherFile%"
-	echo Shell.Run Path, 4, true >> "%launcherFile%"
+	echo Shell.Run Path, 0, true >> "%launcherFile%"
+rem	echo Shell.Run Path, 4, true >> "%launcherFile%"
 )
 
 
@@ -69,7 +70,7 @@ echo "%launch%"
 
 if "%launch%"=="y" (
 	:launch
-	echo Script path = "%outputDir%\%outputBasename%"
-	echo Application starting...
+	cd ./build/
+	echo Execute from path "%outputDir%\%outputBasename%"
 	powershell.exe -ExecutionPolicy UnRestricted -File "%outputDir%\%outputBasename%"
 )
