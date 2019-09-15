@@ -119,4 +119,12 @@
             top = $paddingTop; left = $paddingLeft; right = $paddingRight; bottom = $paddingBottom
         };
     }
+
+    allowDrop([bool] $allow){
+        $this.object.allowDrop = $allow;
+    }
+
+    [bool] isDropAllowed(){
+        return $this.object.allowDrop;
+    }
 }

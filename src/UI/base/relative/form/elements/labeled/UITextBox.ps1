@@ -32,6 +32,4 @@ class UITextBox: UILabeled {
     setScrollBars([string] $scroll){
         $this.object.ScrollBars = $scroll;
     }
-
-
 }

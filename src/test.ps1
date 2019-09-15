@@ -1,24 +1,4 @@
 # Your script's code here
-$myAppName = 'hello world';
-$app = new App($myAppName);
-
-$app.singleRun($true);
-
-$app.onStart({
-    Write-host "I'm started!"
-});
-
-$app.onError({
-    Write-host "Error :("
-});
-
-$app.start();
-
-$app.interrupt();
-
-Write-host "before start ... /// "
-
-
 
 $form = new UIForm;
 $form.setTitle('meow');
@@ -32,7 +12,7 @@ $label = new UILabel;
 $label.setText('Drag me!');
 $label.set('backColor', '#ff2222');
 $label.setPos(100, 150);
-$label.set('AllowDrop', $true);
+# $label.set('AllowDrop', $true);
 $label.setSize(100, 50);
 $label.setAnchor('Top, Left');
 # $label.setAnchors($true, $true, $false, $false);
@@ -77,5 +57,50 @@ $select.setBoxHeight(150);
 
 $form.add($select);
 
-var_dump($checkBox.object);
-$form.show();
+# dump($checkBox.object);
+
+$dropLabel = new UILabel;
+$dropLabel.setText('Drop on me');
+$dropLabel.set('backColor', '#9beaef');
+$dropLabel.setPos(10, 100);
+$dropLabel.setSize(100, 200);
+$dropLabel.setAnchor('Top, Left');
+$dropLabel.setAutoSize($false);
+$dropLabel.setText($PSCommandPath);
+
+$dropLabel.allowDrop($true);
+$dropLabel.on('DragOver', {
+    #Event Argument: $_ = [System.Windows.Forms.DragEventArgs]
+    if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)){
+        $_.Effect = 'Copy'
+    }
+    else {
+        $_.Effect = 'None'
+    }
+});
+
+$dropLabel.on('DragDrop', {
+    #Event Argument: $_ = [System.Windows.Forms.DragEventArgs]
+    
+    [string[]] $files = [string[]]$_.Data.GetData([Windows.Forms.DataFormats]::FileDrop)
+    if ($files) {
+        $dropLabel.setText($files[0]);
+    }
+    
+});
+
+
+$form.add($dropLabel);
+
+
+$app = new App;
+$app.setName("My first application");
+$app.singleRun($true);
+$app.start({
+    $form.show();
+});
+$app.error({
+    $result = [System.Windows.Forms.MessageBox]::Show($_, 'Application error', 'Ok', 'Error');
+});
+
+$app.launch();
