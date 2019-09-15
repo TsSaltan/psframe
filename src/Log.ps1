@@ -4,6 +4,10 @@ class Log {
     static [bool] $writeHost = $true;
     static [int] $writeLevel = 0;
 
+    static setLogFile([string] $filename){
+        [Log]::logFile = $filename + '.log';
+    }
+
     <##
      # Levels
      # 0 - debug

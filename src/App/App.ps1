@@ -3,47 +3,86 @@
  #>
 
 class App {
-    static hidden [HashTable] $apps = @{};
-    hidden [string] $name;
+    hidden [string]        $name;
+    hidden [bool]          $single = $false;
+    hidden [bool]          $started = $false;
+    hidden [ScriptBlock]   $onBeforeStart = {};
+    hidden [ScriptBlock]   $onStart = {};
+    hidden [ScriptBlock]   $onError = {};
+    hidden $lockFile;
 
     App([string] $name){
-        $this.name = $name;
-
-    
-        [App]::apps[$this.name] = @{
-            isStarted = $false;
-            onStart = $null;
-            singleRun = $false;
-        };
+        $this.setName($name);
     }
 
-    onStart([ScriptBlock] $callback){
-        [App]::apps[$this.name]['onStart'] = $callback;
+    App(){
+        $this.setName($this.getScriptName());
+    }
+
+    [string] getScriptPath(){
+        return $PSCommandPath;
+    }
+
+    [string] getScriptName(){
+        return (Get-Item $PSCommandPath ).Basename;
+    }
+
+    [string] getParentDir(){
+        return Split-Path -Parent $PSCommandPath;
+    }
+
+    beforeStart([ScriptBlock] $callback){
+        $this.onBeforeStart = $callback;
+    }
+
+    start([ScriptBlock] $callback){
+        $this.onStart = $callback;
+    }
+
+    error([ScriptBlock] $callback){
+        $this.onError = $callback;
     }
 
     singleRun([bool] $value){
-        [App]::apps[$this.name]['singleRun'] = $value;
+        $this.single = $value;
     }
 
+    setName([string] $name){
+        $pattern = '[^a-zA-Z0-9_]';
+        $this.name = $name -replace $pattern, '-';
+    }
 
-    [string] static start(){
-        foreach($key in [App]::apps.Keys){
-            if([App]::apps[$key]['onStart'] -ne $null){
-                $callback = [App]::apps[$key]['onStart'];
-                $single = [App]::apps[$key]['singleRun'];
-                $id = hash($key, 'MD5');
+    launch(){
+        $lockPath = $this.getParentDir() + '\' + $this.name + '.lock';
+        try {
+            [Log]::setLogFile($this.getParentDir() + '\' + $this.name);
+            info("[App] Application '" + $this.name + "' starting...");
+            info("[App] Script path: " + $this.getScriptPath() );
+            Invoke-Command -ScriptBlock $this.onBeforeStart;
 
-                if($single){
-                    $tmpFile = '.lock';
+            if($this.single){
+                try {
+                    $this.lockFile = [System.IO.File]::Open($lockPath, "OpenOrCreate", "Write", "None");
+                } catch [System.Management.Automation.MethodInvocationException] {
+                    throw "Application already started";
                 }
-
-                Write-host "[Job] Starting $key ..."
-                Start-Job -scriptblock $callback
             }
-        }
 
-        Get-Job | Wait-Job 
-        return Get-Job | Receive-Job 
+            Invoke-Command -ScriptBlock $this.onStart;
+            
+            if($this.single){
+                $this.lockFile.close();
+                [System.IO.File]::Delete($lockPath);
+            }
+
+        } catch {
+            # $_.Exception.Message
+            error("[App] Catched exception: " + $_.Exception);
+            Invoke-Command -ScriptBlock $this.onError -ArgumentList $_.Exception;
+            break;
+        } finally {
+            info("Application '" + $this.name + "' finished.");
+        }
     }
 }
 

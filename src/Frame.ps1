@@ -2,11 +2,12 @@
  # PowerShell Framework
  # by tssaltan
  #
- # Required PS version: 3.0
- # Framework version: 0.2-dev
- #
  # Create file index.ps1 and put here your script
+ #
+ # Required PS version: 3.0
+ # Framework version: 0.3-dev
  #>
+New-Variable -Name 'PSFrameVersion' -Value 0.3 -Option Constant
 
 function echo($data){
     Write-host $data
