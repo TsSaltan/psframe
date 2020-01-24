@@ -40,7 +40,7 @@ $checkBox.on('click', {
         $label.set('backColor', '#ff2222');
         $label.setText('Cannot drag');
     }
-});
+}.getNewClosure());
 
 $checkBox.setPos(10, 10);
 $form.add($checkBox);
