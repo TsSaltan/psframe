@@ -1,4 +1,5 @@
 # PowerShell Framework
+Version: **1.0-dev**
 
 ## Directories structure
 Framework code located at **/src-frame/** directory.

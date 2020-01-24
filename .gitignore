@@ -1,3 +1,5 @@
 build/*
 src/index.ps1
 *.log
+psframe.sublime-project
+psframe.sublime-workspace
