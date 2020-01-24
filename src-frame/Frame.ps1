@@ -2,12 +2,10 @@
  # PowerShell Framework
  # by tssaltan
  #
- # Create file index.ps1 and put here your script
- #
  # Required PS version: 3.0
- # Framework version: 0.3-dev
+ # Framework version: 1.0-dev
  #>
-New-Variable -Name 'PSFrameVersion' -Value 0.3 -Option Constant
+New-Variable -Name 'PSFrameVersion' -Value '1.0-dev' -Option Constant
 
 function echo($data){
     Write-host $data
@@ -17,7 +15,6 @@ function dump($object){
     $object | Select-Object -Property *
 }
 
-# @deprecated
 function new([string] $className){
     return New-Object $className
 }

@@ -23,6 +23,14 @@ class App {
         return $PSCommandPath;
     }
 
+    [string] getResourcePath(){
+        return $this.getParentDir() + '\res';
+    }
+
+    [string] getResourcePath([string] $filename){
+        return $this.getParentDir() + '\res\' + $filename;
+    }
+
     [string] getScriptName(){
         return (Get-Item $PSCommandPath ).Basename;
     }

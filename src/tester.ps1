@@ -39,7 +39,7 @@ $checkBox.on('click', {
 $checkBox.setPos(10, 25);
 $form.add($checkBox);
 
-$panel = new UIPanel
+$panel = new UIPanel;
 $panel.setPos(150, 50);
 $panel.setAutoSize($false);
 $panel.setSize(500, 300);
@@ -97,7 +97,10 @@ $app = new App;
 $app.setName("My first application");
 $app.singleRun($true);
 $app.start({
-    $form.show();
+    # $form.show();
+
+    $res = $app.getResourcePath('test-resource.txt');
+    [System.Windows.Forms.MessageBox]::Show([File]::read($res), 'Application error', 'Ok', 'Warning');
 });
 $app.error({
     $result = [System.Windows.Forms.MessageBox]::Show($_, 'Application error', 'Ok', 'Error');
