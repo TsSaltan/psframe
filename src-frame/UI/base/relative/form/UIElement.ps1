@@ -56,7 +56,7 @@
             $this.dragEvents = $true;
             $this.on('MouseDown', {
                 if($that.drag){
-                    $pos = getCursorPos
+                    $pos = [System]::getCursorPos()
                     $that.dragging = $true;
                     $that.dragMouse = $pos;
                 }
@@ -64,7 +64,7 @@
 
             $this.on('MouseMove', {
                 if($that.drag -and $that.dragging){
-                    $pos = getCursorPos
+                    $pos = [System]::getCursorPos()
                     $currentPos = $that.getPos();
                     
                     if($that.dragLimit -eq $null){

@@ -13,6 +13,10 @@ class UIForm : UIRelative {
         $this.object.text = $title;
     }
 
+    [string] getTitle(){
+        return $this.object.text;
+    }
+
     setMaxSize([int] $width, [int] $height){
         $this.object.maximumSize = New-Object System.Drawing.Size($width, $height);
     }
@@ -48,6 +52,9 @@ class UIForm : UIRelative {
         $this.object.formBorderStyle  = $style;
     }
 
+    <##
+     # Отображать [все] кнопки свернуть/развернуть/закрыть
+     #>
     setControlBox([bool] $view){
         $this.object.controlBox = $view;
     }
