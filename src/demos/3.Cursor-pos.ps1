@@ -1,5 +1,3 @@
-# Your script's code here
-
 $form = new UIForm;
 $form.setTitle('Cursor position');
 $form.setSize(300, 150);
@@ -15,11 +13,12 @@ $form.add($cpLabel);
 [Demo]::add($form);
 
 $form.on('shown', {
-    $timer1 = New-Object System.Windows.Forms.Timer
-    $timer1.Interval = 100 
-    $timer1.add_Tick({
+    $global:mouseTimer = new-object Timer({
         $pos = [System]::getCursorPos();
-            $cpLabel.setText('Cursor position:' + $pos.X + ' x ' + $pos.Y);
-    })
-    $timer1.Start();
+        $cpLabel.setText('Cursor position:' + $pos.X + ' x ' + $pos.Y);
+    }, 150);
+});
+
+$form.on('FormClosed', {
+    $mouseTimer.stop();
 });
