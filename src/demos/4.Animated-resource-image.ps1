@@ -6,10 +6,11 @@ $form.setMaximizeBox($false);
 $form.setBackgroundColor('#c4ebe8');
 
 $preloader = new UIPictureBox;
-$preloader.setPos(10, 10);
+$preloader.setPos(0, 0);
 $preloader.setSize(400, 300);
 #$preloader.setAutoSize($true);
 $preloader.loadImage('res/preloader.gif'); # 400 x 300 px
+$preloader.setSizeMode('CenterImage');
 $preloader.setAnchors($true, $true, $true, $true);
 
 $form.add($preloader);
