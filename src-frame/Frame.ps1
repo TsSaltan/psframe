@@ -5,7 +5,7 @@
  # Required PS version: 3.0
  # Framework version: 1.0-dev
  #>
-New-Variable -Name 'PSFrameVersion' -Value '1.0-dev' -Option Constant
+New-Variable -Name 'PSFrameVersion' -Value '1.0.1-dev' -Option Constant
 
 function echo($data){
     Write-host $data

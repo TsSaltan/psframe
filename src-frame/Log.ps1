@@ -2,7 +2,7 @@ class Log {
     static [string] $logFile = 'app.log'
     static [bool] $writeFile = $true;
     static [bool] $writeHost = $true;
-    static [int] $writeLevel = 0;
+    static [int] $writeLevel = -1;
 
     static setLogFile([string] $filename){
         [Log]::logFile = $filename + '.log';
@@ -18,7 +18,7 @@ class Log {
      #>
     static add([string] $message, [int] $level){
         if($level -gt [Log]::writeLevel){
-            $color = 'Gray';
+            $color = 'White';
             $type = 'Debug';
             switch ($level) {
                 1 { 
