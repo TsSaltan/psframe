@@ -20,7 +20,7 @@ $form.add($preloader);
 $form.on('shown', {
     $global:sizeTimer = new-object Timer({
         $size = $form.getSize();
-        $form.setTitle('[' + $size.width + 'x' + $size.height + '] Animate resource image');
+        $form.setTitle('[' + $size.width + 'x' + $size.height + '] Animated resource image');
     }, 150);
 });
 
