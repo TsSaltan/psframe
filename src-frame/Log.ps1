@@ -32,7 +32,7 @@ class Log {
                 }
 
                 3 { 
-                    $color = 'Orange' 
+                    $color = 'DarkYellow' 
                     $type = 'Warning'
                 }
 
