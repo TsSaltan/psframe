@@ -52,16 +52,33 @@ class UIAlert {
         return alert $this.message $this.title $this.buttons $this.type
     }
 
-    static [string] message([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
+    static [string] message([string] $message, [string] $title, [string] $buttons){
         $alert = new UIAlert($message, $title, $buttons, 'None');
         return $alert.show();
     }
+    
+    static [string] message([string] $message, [string] $title){
+        return [UIAlert]::message($message, $title, 'OK');
+    }
 
-    static [string] error([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
+    static [string] message([string] $message){
+        return [UIAlert]::message($message, 'Message', 'OK');
+    }
+
+    static [string] error([string] $message, [string] $title, [string] $buttons){
         $alert = new UIAlert($message, $title, $buttons, 'Error');
         return $alert.show();
     }
 
+    static [string] error([string] $message, [string] $title){
+        return [UIAlert]::message($message, $title, 'OK');
+    }
+
+    static [string] error([string] $message){
+        return [UIAlert]::message($message, 'Message', 'OK');
+    }
+
+    <# @todo aliases for next functions without arguments #>
     static [string] warning([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
         $alert = new UIAlert($message, $title, $buttons, 'Warning');
         return $alert.show();
@@ -81,8 +98,21 @@ class UIAlert {
         $alert = new UIAlert($message, $title, $buttons, 'Information');
         return $alert.show();
     }
+
+    static [string] question([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
+        $alert = new UIAlert($message, $title, $buttons, 'Question');
+        return $alert.show();
+    }
+
+    static [string] input([string] $message, [string] $title = 'Message', [string] $value = ''){
+        return prompt $message $title $value;
+    }
 }
 
 function alert([string] $message, [string] $title = 'Message', [string] $buttons = 'OK', [string] $type = 'None'){
     return [System.Windows.Forms.MessageBox]::Show($message, $title, $buttons, $type);
+}
+
+function prompt([string] $message, [string] $title = 'Message', [string] $value = ''){
+    return [Microsoft.VisualBasic.Interaction]::InputBox($message, $title, $value);
 }

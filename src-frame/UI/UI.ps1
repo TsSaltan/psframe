@@ -4,6 +4,7 @@
 
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing") 
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+[void] [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic')
 
 [System.Windows.Forms.Application]::EnableVisualStyles();
 
