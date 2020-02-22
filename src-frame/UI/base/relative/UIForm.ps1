@@ -137,4 +137,8 @@ class UIForm : UIRelative {
     show(){
         $this.object.showDialog();
     }
+
+    hide(){
+        $this.object.hide();
+    }
 }
