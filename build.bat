@@ -29,16 +29,18 @@ echo [Builder] Current directory: %cd%
 echo # PScript builder > %outputFile%
 echo. >> %outputFile%
 
+echo # [Builder] Import framework >> %outputFile%
 for /f %%f in ('dir "%maskFrame%" /b/s') do (
 	echo [Builder] Import file: %%f
-	echo # [Builder] Import %%~nf >> %outputFile%
+	echo # [Builder] Import file: %%~nf >> %outputFile%
 	type %%f >> %outputFile%
 	echo. >> %outputFile%
 )
 
+echo # [Builder] Import source >> %outputFile%
 for /f %%f in ('dir "%maskSource%" /b/s') do (
 	echo [Builder] Import file: %%f
-	echo # [Builder] Import %%~nf >> %outputFile%
+	echo # [Builder] Import file: %%~nf >> %outputFile%
 	type %%f >> %outputFile%
 	echo. >> %outputFile%
 )
