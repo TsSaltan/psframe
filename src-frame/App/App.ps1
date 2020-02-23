@@ -6,9 +6,9 @@ class App {
     hidden [string]        $name;
     hidden [bool]          $single = $false;
     hidden [bool]          $started = $false;
-    hidden [ScriptBlock]   $onBeforeStart = {};
-    hidden [ScriptBlock]   $onStart = {};
-    hidden [ScriptBlock]   $onError = {};
+    hidden [ScriptBlock]   $cbBeforeStart = {};
+    hidden [ScriptBlock]   $cbStart = {};
+    hidden [ScriptBlock]   $cbError = {};
     hidden $lockFile;
 
     App([string] $name){
@@ -39,19 +39,19 @@ class App {
         return Split-Path -Parent $PSCommandPath;
     }
 
-    beforeStart([ScriptBlock] $callback){
-        $this.onBeforeStart = $callback;
+    onBeforeStart([ScriptBlock] $callback){
+        $this.cbBeforeStart = $callback;
     }
 
-    start([ScriptBlock] $callback){
-        $this.onStart = $callback;
+    onStart([ScriptBlock] $callback){
+        $this.cbStart = $callback;
     }
 
-    error([ScriptBlock] $callback){
-        $this.onError = $callback;
+    onError([ScriptBlock] $callback){
+        $this.cbError = $callback;
     }
 
-    singleRun([bool] $value){
+    setSingleRun([bool] $value){
         $this.single = $value;
     }
 
@@ -66,7 +66,7 @@ class App {
             [Log]::setLogFile($this.getParentDir() + '\' + $this.name);
             [Log]::add("App", "Application '" + $this.name + "' was started", 1);
             [Log]::add("App", "Script path: " + $this.getScriptPath(), 0);
-            Invoke-Command -ScriptBlock $this.onBeforeStart;
+            Invoke-Command -ScriptBlock $this.cbBeforeStart;
 
             if($this.single){
                 try {
@@ -77,7 +77,7 @@ class App {
                 }
             }
 
-            Invoke-Command -ScriptBlock $this.onStart;
+            Invoke-Command -ScriptBlock $this.cbStart;
             
             if($this.single){
                 $this.lockFile.close();
@@ -86,7 +86,7 @@ class App {
 
         } catch {
             [Log]::add("App", "Catched exception: " + $_.Exception, 4);
-            Invoke-Command -ScriptBlock $this.onError -ArgumentList $_.Exception;
+            Invoke-Command -ScriptBlock $this.cbError -ArgumentList $_.Exception;
             break;
         } finally {
             [Log]::add("App", "Application finished", 1);
