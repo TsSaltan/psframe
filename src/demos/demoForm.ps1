@@ -10,8 +10,8 @@ $demoForm.add($demoLabel);
 
 $app = new App;
 $app.setName($appTitle);
-$app.singleRun($true);
-$app.start({
+$app.setSingleRun($true);
+$app.onStart({
     $startX = 50;
     $startY = 35;
     $formHeight = 100;
@@ -35,7 +35,7 @@ $app.start({
     $demoForm.show();
 });
 
-$app.error({
+$app.onError({
     $alert = new UIAlert($_, '[Error]', 'OK', 'Error');
     $alert.show();
 });

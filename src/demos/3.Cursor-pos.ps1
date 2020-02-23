@@ -13,10 +13,10 @@ $form.add($cpLabel);
 [Demo]::add($form);
 
 $form.on('shown', {
-    $global:mouseTimer = new-object Timer({
+    $global:mouseTimer = new Timer({
         $pos = [System]::getCursorPos();
         $cpLabel.setText('Cursor position:' + $pos.X + ' x ' + $pos.Y);
-    }, 150);
+    }, 50);
 });
 
 $form.on('FormClosed', {
