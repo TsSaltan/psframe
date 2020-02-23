@@ -5,7 +5,7 @@ class Log {
     static [int] $writeLevel = -1;
 
     static setLogFile([string] $filename){
-        [Log]::logFile = $filename + '.log';
+        [Log]::logFile = $filename.toLower() + '.log';
     }
 
     <##
@@ -19,20 +19,21 @@ class Log {
     static add([string] $message, [int] $level){
         if($level -gt [Log]::writeLevel){
             $color = 'White';
+            $color = 'DarkGray';
             $type = 'Debug';
             switch ($level) {
                 1 { 
-                    $color = 'Blue' 
+                    $color = 'Green' 
                     $type = 'Info'
                 }
 
                 2 { 
-                    $color = 'Yellow' 
+                    $color = 'Cyan' 
                     $type = 'Notice'
                 }
 
                 3 { 
-                    $color = 'DarkYellow' 
+                    $color = 'Yellow' 
                     $type = 'Warning'
                 }
 
@@ -48,10 +49,15 @@ class Log {
 
             if([Log]::writeFile){
                 $date = Get-Date -uFormat "%Y-%m-%d %H:%M:%S";
-                $fmessage = "[$date] [$type] $message";
+                $fmessage = "[$date] [$type]`t$message";
                 [File]::add([Log]::logFile, $fmessage);
             }
         }
+    }
+
+
+    static add([string] $type, [string] $message, [int] $level){
+        [Log]::add("[$type] $message", $level);
     }
 }
 

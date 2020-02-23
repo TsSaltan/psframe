@@ -61,15 +61,16 @@ class App {
     }
 
     launch(){
-        $lockPath = $this.getParentDir() + '\' + $this.name + '.lock';
+        $lockPath = $this.getParentDir() + '\' + $this.name.toLower() + '.lock';
         try {
             [Log]::setLogFile($this.getParentDir() + '\' + $this.name);
-            info("[App] Application '" + $this.name + "' starting...");
-            info("[App] Script path: " + $this.getScriptPath() );
+            [Log]::add("App", "Application '" + $this.name + "' was started", 1);
+            [Log]::add("App", "Script path: " + $this.getScriptPath(), 0);
             Invoke-Command -ScriptBlock $this.onBeforeStart;
 
             if($this.single){
                 try {
+                    [Log]::add("App", "Lock file: " + $lockPath, 0);
                     $this.lockFile = [System.IO.File]::Open($lockPath, "OpenOrCreate", "Write", "None");
                 } catch [System.Management.Automation.MethodInvocationException] {
                     throw "Application already started";
@@ -84,12 +85,11 @@ class App {
             }
 
         } catch {
-            # $_.Exception.Message
-            error("[App] Catched exception: " + $_.Exception);
+            [Log]::add("App", "Catched exception: " + $_.Exception, 4);
             Invoke-Command -ScriptBlock $this.onError -ArgumentList $_.Exception;
             break;
         } finally {
-            info("Application '" + $this.name + "' finished.");
+            [Log]::add("App", "Application finished", 1);
         }
     }
 }
