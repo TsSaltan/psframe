@@ -9,12 +9,11 @@ $abtn1.on('click', {
 });
 $alertsForm.add($abtn1);
 
-
 $abtn3 = new UIButton('Type: Warning; Button: OK');
 $abtn3.setPos(5, 55);
 $abtn3.setAutosize($true);
 $abtn3.on('click', {
-    write-host([UIAlert]::warning( "Hello world!", "Alert title", "OK"));
+    write-host([UIAlert]::warn( "Hello world!", "Alert title", "OK"));
 });
 $alertsForm.add($abtn3);
 
@@ -26,7 +25,7 @@ $abtn4.on('click', {
 });
 $alertsForm.add($abtn4);
 
-$abtn2 = new UIButton('Type: info; Button: YesNoCancel');
+$abtn2 = new UIButton('Type: Information; Button: YesNoCancel');
 $abtn2.setPos(5, 30);
 $abtn2.setAutosize($true);
 $abtn2.on('click', {
@@ -34,7 +33,7 @@ $abtn2.on('click', {
 });
 $alertsForm.add($abtn2);
 
-$abtn5 = new UIButton('Type: question; Button: YesNoCancel');
+$abtn5 = new UIButton('Type: Question; Button: YesNoCancel');
 $abtn5.setPos(5, 105);
 $abtn5.setAutosize($true);
 $abtn5.on('click', {
@@ -42,11 +41,11 @@ $abtn5.on('click', {
 });
 $alertsForm.add($abtn5);
 
-$abtn6 = new UIButton('Type: input');
+$abtn6 = new UIButton('Type: Prompt');
 $abtn6.setPos(5, 130);
 $abtn6.setAutosize($true);
 $abtn6.on('click', {
-    write-host([UIAlert]::input( "Hello world!", "Alert title"));
+    write-host([UIAlert]::input( "Hello world!", "Alert title", "Default value"));
 });
 $alertsForm.add($abtn6);
 

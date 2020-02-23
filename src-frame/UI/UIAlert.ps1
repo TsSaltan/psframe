@@ -1,25 +1,21 @@
 class UIAlert {
     <##
      # @url https://docs.microsoft.com/en-us/dotnet/api/system.windows.messageboximage?view=netframework-4.8
-     # Asterisk   64  The message box contains a symbol consisting of a lowercase letter i in a circle.
-     # Error   16  The message box contains a symbol consisting of white X in a circle with a red background.
-     # Exclamation 48  The message box contains a symbol consisting of an exclamation point in a triangle with a yellow background.
-     # Hand    16  The message box contains a symbol consisting of a white X in a circle with a red background.
-     # Information 64  The message box contains a symbol consisting of a lowercase letter i in a circle.
-     # None    0   The message box contains no symbols.
-     # Question    32  
-     # The message box contains a symbol consisting of a question mark in a circle. The question mark message icon is no longer recommended because it does not clearly represent a specific type of message and because the phrasing of a message as a question could apply to any message type. In addition, users can confuse the question mark symbol with a help information symbol. Therefore, do not use this question mark symbol in your message boxes. The system continues to support its inclusion only for backward compatibility.
-     # Stop    16  The message box contains a symbol consisting of white X in a circle with a red background.
-     # Warning 48  The message box contains a symbol consisting of an exclamation point in a triangle with a yellow background.
+     # None    
+     # Error
+     # Information
+     # Question    
+     # Warning 
+     # Prompt (prompt type using only OKCancel buttons)
      #>
     hidden [string] $type = 'None';
 
     <##
      # @url https://docs.microsoft.com/en-us/dotnet/api/system.windows.messageboxbutton?view=netframework-4.8
-     # OK   0   The message box displays an OK button.
-     # OKCancel    1   The message box displays OK and Cancel buttons.
-     # YesNo   4   The message box displays Yes and No buttons.
-     # YesNoCancel 3   The message box displays Yes, No, and Cancel buttons.
+     # OK   
+     # OKCancel  
+     # YesNo  
+     # YesNoCancel
      #>
     hidden [string] $buttons = 'OK';
 
@@ -38,7 +34,12 @@ class UIAlert {
     UIAlert([string] $message, [string] $title, [string] $buttons){
         $this.message = $message;
         $this.title = $title;
-        $this.buttons = $buttons;
+        if($buttons -eq 'Prompt' -or $buttons -eq 'prompt'){
+            $this.type = 'Prompt';
+            $this.buttons = 'OKCancel';
+        } else {            
+            $this.buttons = $buttons;
+        }
     }
 
     UIAlert([string] $message, [string] $title, [string] $buttons, [string] $type){
@@ -48,8 +49,16 @@ class UIAlert {
         $this.type = $type;
     }
 
+    [string] show([string] $defValue){
+        if($this.type -eq 'Prompt'){
+            return prompt $this.message $this.title $defValue;
+        } else {
+            return alert $this.message $this.title $this.buttons $this.type;
+        }
+    }
+
     [string] show(){
-        return alert $this.message $this.title $this.buttons $this.type
+        return $this.show($null);
     }
 
     static [string] message([string] $message, [string] $title, [string] $buttons){
@@ -58,11 +67,13 @@ class UIAlert {
     }
     
     static [string] message([string] $message, [string] $title){
-        return [UIAlert]::message($message, $title, 'OK');
+        $alert = new UIAlert($message, $title, 'OK', 'None');
+        return $alert.show();
     }
 
     static [string] message([string] $message){
-        return [UIAlert]::message($message, 'Message', 'OK');
+        $alert = new UIAlert($message, 'Message', 'OK', 'None');
+        return $alert.show();
     }
 
     static [string] error([string] $message, [string] $title, [string] $buttons){
@@ -71,41 +82,73 @@ class UIAlert {
     }
 
     static [string] error([string] $message, [string] $title){
-        return [UIAlert]::message($message, $title, 'OK');
+        $alert = new UIAlert($message, $title, 'OK', 'Error');
+        return $alert.show();
     }
 
     static [string] error([string] $message){
-        return [UIAlert]::message($message, 'Message', 'OK');
+        $alert = new UIAlert($message, 'Error', 'OK', 'Error');
+        return $alert.show();
     }
 
-    <# @todo aliases for next functions without arguments #>
-    static [string] warning([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
+    static [string] warn([string] $message, [string] $title, [string] $buttons){
         $alert = new UIAlert($message, $title, $buttons, 'Warning');
         return $alert.show();
     }
 
-    static [string] warn([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
-        $alert = new UIAlert($message, $title, $buttons, 'Warning');
+    static [string] warn([string] $message, [string] $title){
+        $alert = new UIAlert($message, $title, 'OK', 'Warning');
         return $alert.show();
     }
 
-    static [string] information([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
+    static [string] warn([string] $message){
+        $alert = new UIAlert($message, 'Warning', 'OK', 'Warning');
+        return $alert.show();
+    }
+
+    static [string] info([string] $message, [string] $title, [string] $buttons){
         $alert = new UIAlert($message, $title, $buttons, 'Information');
         return $alert.show();
     }
 
-    static [string] info([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
-        $alert = new UIAlert($message, $title, $buttons, 'Information');
+    static [string] info([string] $message, [string] $title){
+        $alert = new UIAlert($message, $title, 'OK', 'Information');
         return $alert.show();
     }
 
-    static [string] question([string] $message, [string] $title = 'Message', [string] $buttons = 'OK'){
+    static [string] info([string] $message){
+        $alert = new UIAlert($message, 'Information', 'OK', 'Information');
+        return $alert.show();
+    }
+
+    static [string] question([string] $message, [string] $title, [string] $buttons){
         $alert = new UIAlert($message, $title, $buttons, 'Question');
         return $alert.show();
     }
 
-    static [string] input([string] $message, [string] $title = 'Message', [string] $value = ''){
-        return prompt $message $title $value;
+    static [string] question([string] $message, [string] $title){
+        $alert = new UIAlert($message, $title, 'OK', 'Question');
+        return $alert.show();
+    }
+
+    static [string] question([string] $message){
+        $alert = new UIAlert($message, 'Question', 'OK', 'Question');
+        return $alert.show();
+    }
+
+    static [string] input([string] $message, [string] $title, [string] $value){
+        $alert = new UIAlert($message, $title, 'OK', 'Prompt');
+        return $alert.show($value);
+    }
+
+    static [string] input([string] $message, [string] $title){
+        $alert = new UIAlert($message, $title, 'OK', 'Prompt');
+        return $alert.show();
+    }
+
+    static [string] input([string] $message){
+        $alert = new UIAlert($message, 'Prompt', 'OK', 'Prompt');
+        return $alert.show();
     }
 }
 
