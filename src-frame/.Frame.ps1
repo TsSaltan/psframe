@@ -3,9 +3,9 @@
  # by tssaltan
  #
  # Required PS version: 3.0
- # Framework version: 1.0.2-dev
+ # Framework version: 1.1-dev
  #>
-New-Variable -Name 'PSFrameVersion' -Value '1.0.2-dev' -Option Constant
+New-Variable -Name 'PSFrameVersion' -Value '1.1-dev' -Option Constant
 
 Set-Alias -Name new -Value New-Object
 Set-Alias -Name wait -Value Start-Sleep
