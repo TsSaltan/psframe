@@ -16,7 +16,7 @@ $form.on('shown', {
     $global:mouseTimer = new Timer({
         $pos = [System]::getCursorPos();
         $cpLabel.setText('Cursor position:' + $pos.X + ' x ' + $pos.Y);
-    }, 50);
+    }, 50); 
 });
 
 $form.on('FormClosed', {
