@@ -36,7 +36,8 @@ $app.start({
 });
 
 $app.error({
-    $result = [System.Windows.Forms.MessageBox]::Show($_, 'Application error', 'Ok', 'Error');
+    $alert = new UIAlert($_, '[Error]', 'OK', 'Error');
+    $alert.show();
 });
 
 $app.launch();
