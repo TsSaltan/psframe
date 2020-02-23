@@ -1,3 +1,5 @@
+:: PowerScript Framework
+:: Application builder
 @echo off
 setlocal ENABLEDELAYEDEXPANSION
 chcp 65001 > nul
@@ -26,21 +28,23 @@ rd "%outputDir%" /S /Q 2> nul
 md "%outputDir%"
 
 echo [Builder] Current directory: %cd%
-echo # PScript builder > %outputFile%
-echo. >> %outputFile%
+echo [Builder] Import PowerScript Framework from "/src-frame/"
+echo ^<# [Builder] PowerScript Framework #^> > %outputFile%
 
-echo # [Builder] Import framework >> %outputFile%
 for /f %%f in ('dir "%maskFrame%" /b/s') do (
-	echo [Builder] Import file: %%f
-	echo # [Builder] Import file: %%~nf >> %outputFile%
+	echo [Builder] File: %%f
+	echo. >> %outputFile%
+	echo ^<# [Builder] File: %%~nf #^> >> %outputFile%
 	type %%f >> %outputFile%
 	echo. >> %outputFile%
 )
 
-echo # [Builder] Import source >> %outputFile%
+echo [Builder] Import Application from "/src/"
+echo ^<# [Builder] PowerScript Application #^> >> %outputFile%
 for /f %%f in ('dir "%maskSource%" /b/s') do (
-	echo [Builder] Import file: %%f
-	echo # [Builder] Import file: %%~nf >> %outputFile%
+	echo. >> %outputFile%
+	echo [Builder] File: %%f
+	echo ^<# [Builder] File: %%~nf #^> >> %outputFile%
 	type %%f >> %outputFile%
 	echo. >> %outputFile%
 )
@@ -53,7 +57,6 @@ if not exist "%launcherFile%" (
 	echo set FSO = CreateObject("Scripting.FileSystemObject"^) >> "%launcherFile%"
 	echo Path = "powershell.exe -ExecutionPolicy UnRestricted -WindowStyle hidden -File " ^& FSO.GetParentFolderName(FSO.GetFile(WScript.ScriptFullName^)^) ^& "\\%outputBasename%" >> "%launcherFile%"
 	echo Shell.Run Path, 0, true >> "%launcherFile%"
-rem	echo Shell.Run Path, 4, true >> "%launcherFile%"
 )
 
 echo [Builder] Copying resources ...
