@@ -11,7 +11,12 @@ class UIIcon {
     }
 
     [object] getIcon(){
-        return $this.object;
+        return $this.icon;
+    }
+
+    static [object] getDefault(){
+        $path = (Get-Process -id $global:pid).Path
+        return new UIIcon($path);
     }
 }
 
