@@ -15,9 +15,11 @@ function dump($object){
 }
 
 function timestamp(){
-    $time = Get-Date -uFormat %s
-    $sec,$ms = $time.split(',')
-    return $sec;
+    return [Math]::Round((Get-Date).ToFileTime() / 10000000 - 11644473600)
+}
+
+function timestamp_ms(){
+    return [Math]::Round((Get-Date).ToFileTime() / 10000 - 11644473600000)
 }
 
 function hash($string, $method){
