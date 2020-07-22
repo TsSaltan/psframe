@@ -21,7 +21,3 @@ function timestamp(){
 function timestamp_ms(){
     return [Math]::Round((Get-Date).ToFileTime() / 10000 - 11644473600000)
 }
-
-function hash($string, $method){
-    return $string | Get-Hash -Algorithm $method
-}
