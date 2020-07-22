@@ -1,14 +1,51 @@
-#
-# @todo
-#
+<#
+ # Класс для работы с сетевыми функциями
+ #
+ # @method Trace                    Трасировка
+ # @param string $address           IP-address or domain name
+ # @param int $timeoutMs = 5000     Timeout in ms
+ # @param int $maxTTL = 256         Максимальное количество прыжков
+ # @param int $bufferLength = 32    Размер буфера
+ # @param int $hops = 3             Количество пингов для одного участка
+ # @param ScriptBlock $callback     Функция, в которую будут передаваться данные для каждого прыжка
+ #                                  Передаваемые аргументы:
+ #                                  [int] $hop          Номер прыжка (начиная с 1, максимум - $maxTTL) 
+ #                                  [string] $address   IP-адрес текущего прыжка 
+ #                                  [string] $dnsName   IP-адрес + если удается определить доменное имя текущего прыжка 
+ #                                  [array] $trips      Массив с данными о прыжке
+ #                                      @{
+ #                                          Status [string|object] Статус пинга
+ #                                          RTT = {         Время пинга
+ #                                              int         
+ #                                              string      в строке добавляются символы > ~ и единицы измерения
+ #                                          }
+ #                                      } 
+ # @example [Net]::Trace('google.com', {
+ #      param($hop, $address, $dnsName, $trips)
+ #      Write-Host "[#$hop] `t $dnsName"
+ #      foreach ($trip in $trips){
+ #          Write-Host "`t $($trip.Status) `t $($trip.RTT.string)"
+ #      }
+ # });
+ #>
 class Net {
+    static Trace([string] $address, [ScriptBlock] $callback) {
+        [Net]::Trace($address, 5000, 256, 32, 3, $callback)
+    }
+
+    static Trace([string] $address, [int] $timeoutMs, [ScriptBlock] $callback) {
+        [Net]::Trace($address, $timeoutMs, 256, 32, 3, $callback)
+    }
+
+    static Trace([string] $address, [int] $timeoutMs, [int] $maxTTL, [ScriptBlock] $callback) {
+        [Net]::Trace($address, $timeoutMs, $maxTTL, 32, 3, $callback)
+    }
+
+    static Trace([string] $address, [int] $timeoutMs, [int] $maxTTL, [int] $bufferLength, [ScriptBlock] $callback) {
+        [Net]::Trace($address, $timeoutMs, $maxTTL, $bufferLength, 3, $callback)
+    }
+
     static Trace([string] $address, [int] $timeoutMs, [int] $maxTTL, [int] $bufferLength, [int] $hops, [ScriptBlock] $callback) {
-        <#param (
-          [parameter(mandatory=$true)]  [string]    $address,
-          [parameter(mandatory=$false)] [int]       $timeoutMs = 5000,
-          [parameter(mandatory=$false)] [int]       $maxTTL = 128,
-          [parameter(mandatory=$false)] [int]       $bufferLength = 32
-        )#>
 
         $ping = new-object System.Net.NetworkInformation.Ping 
         $byteString = "*".PadRight($bufferLength, "*")
