@@ -55,28 +55,28 @@ class Log {
         }
     }
 
-
     static add([string] $type, [string] $message, [int] $level){
         [Log]::add("[$type] $message", $level);
     }
+
+    static text([string] $message){
+        [Log]::add($message, 0)
+    }
+
+    static info([string] $message){
+        [Log]::add($message, 1)
+    }
+
+    static notice([string] $message){
+        [Log]::add($message, 2)
+    }
+
+    static warning([string] $message){
+        [Log]::add($message, 3)
+    }
+
+    static error([string] $message){
+        [Log]::add($message, 4)
+    }
 }
 
-function log($message){
-    [Log]::add($message, 0)
-}
-
-function info($message){
-    [Log]::add($message, 1)
-}
-
-function notice($message){
-    [Log]::add($message, 2)
-}
-
-function warning($message){
-    [Log]::add($message, 3)
-}
-
-function error($message){
-    [Log]::add($message, 4)
-}
