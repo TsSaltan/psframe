@@ -10,11 +10,27 @@ class UIForm : UIRelative {
     }
 
     setTitle([string] $title){
-        $this.object.text = $title;
+        $this.set('title', $title);
     }
 
     [string] getTitle(){
         return $this.object.text;
+    }
+
+    set([string] $key, $value){
+         if($key -eq "title"){
+            $this.object.text = $value;
+        } else {
+            ([UIRelative]$this).set($key, $value);
+        }
+    }
+
+    [object] get([string] $key){
+         if($key -eq "title"){
+            return $this.object.text;
+        } else {
+            return ([UIRelative]$this).get($key);
+        }
     }
 
     setMaxSize([int] $width, [int] $height){

@@ -34,13 +34,21 @@
         else {
             [UICollection]::setObject($id, $this);
         }
+
         $this.id = $id;
     }
 
     set([string] $key, $value){
-         if($key -eq "id"){
+        if($key -eq "id"){
             $this.setId($value);
-        } else {
+        }
+        elseif($key -eq "x"){
+            $this.object.location = New-Object System.Drawing.Point($value, $this.object.location.Y)
+        }
+        elseif($key -eq "y"){
+            $this.object.location = New-Object System.Drawing.Point($this.object.location.X, $value)
+        } 
+        else {
             $this.object.$key = $value;
         }
     }
@@ -48,6 +56,12 @@
     [object] get([string] $key){
         if($key -eq "id"){
             return $this.getId();
+        }
+        elseif($key -eq "x"){
+            return $this.object.location.X;
+        }
+        elseif($key -eq "y"){
+            return $this.object.location.X;
         }
         return $this.object.$key;
     }
