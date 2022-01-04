@@ -5,7 +5,7 @@ setlocal ENABLEDELAYEDEXPANSION
 chcp 65001 > nul
 
 :: Mask for powershell files
-set srcFrame=%cd%\src-frame
+set srcFrame=%~dp0\src-frame
 set srcScript=%cd%\src
 set maskFrame=%srcFrame%\*.ps1
 set maskSource=%srcScript%\*.ps1
@@ -22,12 +22,11 @@ set outputBasename=app.ps1
 set launcherFile=%outputDir%\launcher.vbs
 
 :: Remove temp and old-build files
-rem del "%outputDir%\*.ps1" 2> nul
-rem rd "%resDst%" /S /Q 2> nul
 rd "%outputDir%" /S /Q 2> nul
 md "%outputDir%"
 
 echo [Builder] Current directory: %cd%
+echo [Builder] Builder directory: %~dp0
 echo [Builder] Import PowerScript Framework from "/src-frame/"
 echo ^<# [Builder] PowerScript Framework #^> > %outputFile%
 
@@ -50,7 +49,7 @@ for /f %%f in ('dir "%maskSource%" /b/s') do (
 )
 
 rem Modify source: adapting syntaxis, replace Class::Method to [Class]::Method
-type "%outputFile%" | regexp "([A-Za-z0-9_]+)::([A-Za-z0-9_]+)\(" "[$1]::$2(" > "%outputFile%.replaced"
+type "%outputFile%" | %~dp0regexp.bat "([A-Za-z0-9_]+)::([A-Za-z0-9_]+)\(" "[$1]::$2(" > "%outputFile%.replaced"
 del "%outputFile%"
 
 rem Renaming output file to .ps1 
