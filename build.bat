@@ -67,8 +67,7 @@ if not exist "%launcherFile%" (
 echo [Builder] Copying resources ...
 xcopy "%resSrc%" "%resDst%" /E
 
-
-if "%~1" == "-launch" (
+Echo.%* | findstr /C:"-launch">nul && (
 	goto launch
 )
 
