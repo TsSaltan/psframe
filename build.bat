@@ -50,7 +50,7 @@ for /f %%f in ('dir "%maskSource%" /b/s') do (
 )
 
 rem Modify source: adapting syntaxis, replace Class::Method to [Class]::Method
-type "%outputFile%" | repl "([A-Za-z0-9_]+)::([A-Za-z0-9_]+)\(" "[$1]::$2(" > "%outputFile%.replaced"
+type "%outputFile%" | regexp "([A-Za-z0-9_]+)::([A-Za-z0-9_]+)\(" "[$1]::$2(" > "%outputFile%.replaced"
 del "%outputFile%"
 
 rem Renaming output file to .ps1 
