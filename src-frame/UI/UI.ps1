@@ -9,6 +9,26 @@
 [System.Windows.Forms.Application]::EnableVisualStyles();
 
 
+class UICollection {
+    hidden static [object] $objects = @{};
+
+    static setObject([string] $id, [object] $object){
+        [UICollection]::objects[$id] = $object;
+    }
+
+    [object] static getObject([string] $id){
+        return [UICollection]::objects[$id];
+    }   
+
+    static replaceId([string] $idFrom, [string] $idTo){
+        [UICollection]::objects[$idTo] = [UICollection]::objects[$idFrom];
+        [UICollection]::objects.PSObject.Properties.Remove($idFrom);
+    }
+}
+
+function ui($objId){
+    return [UICollection]::getObject($objId);
+}
 
 <#
  - GUI - 

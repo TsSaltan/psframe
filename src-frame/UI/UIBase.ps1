@@ -28,6 +28,12 @@
     }
 
     setId([string] $id){
+        if($this.id.length > 0){
+            [UICollection]::replaceId($this.id, $id);
+        }
+        else {
+            [UICollection]::setObject($id, $this);
+        }
         $this.id = $id;
     }
 
