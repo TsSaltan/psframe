@@ -6,4 +6,8 @@ class Str {
     static [string] hash([string] $string, [string] $method){
         return $string | Get-Hash -Algorithm $method
     }
+
+    static [int] length([string] $string){
+        return $string.length
+    }
 }
