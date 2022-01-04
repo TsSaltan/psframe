@@ -1,11 +1,21 @@
 class UIBuilder {
     hidden [object] $html;
 
-    UIBuilder([string] $formFile){
-        $this.html = new-object -com "HTMLFile";
+    UIBuilder() {
+        $this.html = new-object -com "HTMLFile";   
+    }
+
+    loadFile([string] $formFile){
         $content = File::read($formFile);
         $this.html.IHTMLDocument2_write($content);
+    }
+    
+    loadString([string] $xml){
+        $this.html.IHTMLDocument2_write($xml);
+    }
 
+
+    build() {
         $this.html.forms | Foreach-object {
             $this.createUIObject($_);
         }
