@@ -59,7 +59,12 @@ class Log {
         [Log]::add("[$type] $message", $level);
     }
 
-    static text([string] $message){
+    static debug([string] $message){
+        [Log]::add($message, 0)
+    }
+
+    static debug([object] $obj){
+        $message = $obj | Format-List | Out-String;
         [Log]::add($message, 0)
     }
 
