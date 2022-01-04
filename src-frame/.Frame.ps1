@@ -3,15 +3,15 @@
  # by tssaltan
  #
  # Required PS version: 3.0
- # Framework version: 1.2-dev
+ # Framework version: 1.3-dev
  #>
-New-Variable -Name 'PSFrameVersion' -Value '1.2-dev' -Option Constant
+New-Variable -Name 'PSFrameVersion' -Value '1.3-dev' -Option Constant
 
 Set-Alias -Name new -Value New-Object
 Set-Alias -Name wait -Value Start-Sleep
 
 function dump($object){
-    $object | Select-Object -Property *
+    return $object | Format-Table | Out-String
 }
 
 function timestamp(){
