@@ -18,7 +18,6 @@ class UIBuilder {
         $object.attributes | Foreach-Object {
             $attrib = $_;
             if($attrib.specified){
-                Write-host "[$className]::set(" $attrib.name ", " $attrib.value " )"
                 $ui.set($attrib.name, $attrib.value);
             }
         }

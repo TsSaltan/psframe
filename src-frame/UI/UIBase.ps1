@@ -28,7 +28,7 @@
     }
 
     setId([string] $id){
-        if($this.id.length > 0){
+        if($this.id.length -gt 0){
             [UICollection]::replaceId($this.id, $id);
         }
         else {
