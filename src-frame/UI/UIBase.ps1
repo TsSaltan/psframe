@@ -48,6 +48,9 @@
         elseif($key -eq "y"){
             $this.object.location = New-Object System.Drawing.Point($this.object.location.X, $value)
         } 
+        elseif($key -eq "src"){
+            $this.object.load($value);
+        } 
         else {
             $this.object.$key = $value;
         }
