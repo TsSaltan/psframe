@@ -1,5 +1,6 @@
 class UIBuilder {
     hidden [object] $html;
+    hidden [object] $xml;
 
     static fromFile([string] $file){
         $builder = new UIBuilder;
@@ -12,53 +13,76 @@ class UIBuilder {
     }
 
     loadFile([string] $formFile){
-        $content = File::read($formFile);
-        $this.html.IHTMLDocument2_write($content);
+        #$content = File::read($formFile);
+        #$this.html.IHTMLDocument2_write($content);
+        $this.xml = Select-Xml -Path $formFile -xpath "/";
     }
     
     loadString([string] $xml){
         $this.html.IHTMLDocument2_write($xml);
     }
 
+
     build() {
-        #Log::debug('Creating forms');
-        $this.html.forms | Foreach-object {
-            #Write-host($local:obj.nodeName + " id: " + $local:obj.getAttribute('id'));
-            $this.createUIObject($_);
+        #Write-host( 'xml');
+       # Write-host( $this.xml );
+        $this.xml | ForEach-Object { 
+
+            #Write-host( $_.Node);
+            $type = ($_.Node| Get-member)[0].TypeName
+            #Write-host('$_.Node is ' + $type );
+            $this.createUIObject($_.Node);
+
+            #$_.Node | gm -MemberType property | select Name # Node name = form
+            # Write-host( $_.Node | Format-Table | Out-String );
         }
     }
 
     [object] createUIObject([object] $object){
-        $className = "UI{0}" -f $object.nodeName
-        #Log::debug("Create object [$className] id:" + $object.getAttribute('id'));
-        $ui = new-object "$className"
-        
-        $object.attributes | Foreach-Object {
-            $attrib = $_;
-            if($attrib.specified){
-                #Log::debug("[" + $ui.getObjectType() + "]." + $attrib.name + " = " + $attrib.value);
-                $ui.set($attrib.name, $attrib.value);
-            }
+        $objType = ($object | Get-member)[0].TypeName;
+        if($objType -eq "System.Xml.XmlDocument"){
+            $nodeProps = ($object | gm -MemberType property | select Name)
+            $nodeName = $nodeProps.Name
+            $node = $object.$nodeName
         }
-        
-        #Log::debug("Text content for [$className] id:" + $object.getAttribute('id') + " = " + $object.textContent + " (" + $object.textContent.length + ")");
-        if($object.textContent.length -gt 0){
-            #Log::debug("[" + $ui.getObjectType() + "].text = "+ $object.textContent);
-            $ui.set('text', $object.textContent);
-        } 
+        elseif($objType -eq 'System.Xml.XmlElement'){
+            $node = $object
+            $nodeName = $node.Name
+        } else {
+            return @{}
+        }
 
-        #Log::debug("Finding childs for [$className] id:" + $object.getAttribute('id') + ", count:" + $object.children.length);
-        $object.children | Foreach-Object {
-            if($_.nodeName -eq "BODY"){
-                $_.children | Foreach-Object {
+        $ui = new-object "UI$nodeName"
+
+        #Write-host('ObjectName: ' + $nodeName);
+        #Write-host('Attributes: ');
+
+        $node.Attributes | Foreach-Object {
+            $key = $_.toString();
+            $value = $node.$key
+            #Write-host "$key = $value"
+            $ui.set($key, $value);
+            # Write-host($_ + ' = ' + $node.Attributes.$_);
+        }
+
+        if($node.HasChildNodes){
+            #Write-host('Childs: ');
+            #Write-Host ($node.ChildNodes | Format-Table | Out-String)
+
+            $node.ChildNodes | Foreach-Object {
+                $key = $_.toString();
+                $value = $node.$key
+
+                #write-host "* [child-item] $key :"
+                #Write-Host ($_ | Format-Table | Out-String)
+
+                if($key -eq "#text"){
+                    $ui.setText($_.InnerText);
+                }
+                elseif($key -ne "#whitespace"){                
                     $child = $this.createUIObject($_);
-                    #Log::debug("[" + $ui.getObjectType() + "].addBody([" + $child.getObjectType() + "] id: " + $child.get('id') + ")");
                     $ui.add($child);
                 }
-            } else {
-                $child = $this.createUIObject($_);
-                #Log::debug("[" + $ui.getObjectType() + "].add([" + $child.getObjectType() + "] id: " + $child.get('id') + ")");
-                $ui.add($child);
             }
         }
 
