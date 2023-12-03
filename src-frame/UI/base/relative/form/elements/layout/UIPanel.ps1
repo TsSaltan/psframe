@@ -3,7 +3,7 @@
  #>
 class UIPanel : UILabeled {
     UIPanel() {
-        $this.constructObject('GroupBox');
+        $this.constructObject('Panel');
         $this.setRelatives($true, $true);
     }    
 }
