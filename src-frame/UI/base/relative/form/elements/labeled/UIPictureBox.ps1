@@ -8,7 +8,8 @@ class UIPictureBox: UILabeled {
     }    
 
     loadImage([string] $path){
-        $this.object.set('src', $path);
+        $this.set('src', $path);
+        #$this.object.set('src', $path);
     }
 
     <#
